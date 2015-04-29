@@ -6,4 +6,5 @@ clean:
 	find . -name "*.pyc" -exec rm -rvf '{}' \;
 
 install:
-	pip install -e .
+	pip install git+https://github.com/metrilyx/opentsdb-pandas.git
+	pip install git+https://github.com/metrilyx/metrilyx-dataserver.git

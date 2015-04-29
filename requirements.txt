@@ -1,4 +1,3 @@
-opentsdb-pandas
 pyOpenSSL
 service_identity
 autobahn[twisted,accelerate]
