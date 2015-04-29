@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# chkconfig: 234 90 10
+# description: Metrilyx Data Server.  This provides data via websockets.
+#
+
+[ -f "/etc/rc.d/init.d/functions" ] && . /etc/rc.d/init.d/functions
+
+if [ -f "/etc/sysconfig/metrilyx" ]; then
+	. /etc/sysconfig/metrilyx
+else
+	echo "/etc/sysconfig/metrilyx not found!";
+	exit 1;
+fi
+
+NAME="metrilyx-dataserver"
+BIN=${APP_HOME}/bin/${NAME}.py
+LOGLEVEL="WARNING"
+PGREP="/usr/bin/pgrep -f"
+DEFAULT_OPTS="-e 80 -l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname)"
+
+RETVAL=0
+
+# Starts a single dataserver
+start_dataserver() {
+	PORT=$1
+	OPTS="${DEFAULT_OPTS} --port ${PORT}";
+	PIDS=`${PGREP} "${BIN} ${OPTS}" | xargs`;
+
+	if [ "$PIDS" = "" ]; then
+		echo -n "${NAME} starting (port ${PORT})... "
+		METRILYX_HOME=${APP_HOME} PYTHONPATH=${PYTHONPATH} ${BIN} ${OPTS} &
+		sleep 2;
+		PIDS=`${PGREP} "${BIN} ${OPTS}" | xargs`;
+		if [ "$PIDS" = "" ]; then
+			echo "[failed]";
+			RETVAL=2;
+		else
+			echo "[ok]";
+		fi
+	else
+		echo -n "${NAME} already running... ${PIDS}";
+		RETVAL=1
+	fi
+}
+
+# start $SERVER_COUNT instances
+start() {
+	for c in `seq ${SERVER_COUNT}`; do
+		PORT=`expr 9000 \+ $c`
+		start_dataserver $PORT;
+		if [ "$RETVAL" -ne 0 ]; then
+			echo "Failed to start server on port: $PORT"
+			exit $RETVAL;
+		fi
+	done
+}
+
+status() {
+	PIDS=`${PGREP} "${BIN}" | xargs`;
+	if [ "$PIDS" = "" ]; then
+		echo "${NAME} not running";
+	else
+		echo "${NAME} running... ${PIDS}"
+	fi
+}
+
+stop() {
+	echo -n "${NAME} stopping...";
+	PIDS=`${PGREP} "${BIN}" | sort -r`;
+	for pid in $PIDS; do
+		kill $pid;
+	done
+	sleep 2;
+	( ${PGREP} "${BIN}" && echo "[failed]" ) || echo "[ok]";
+}
+
+
+case "$1" in
+	start)
+		start;
+		;;
+	stop)
+		stop;
+		;;
+	status)
+		status;
+		;;
+	restart)
+		$0 stop
+		sleep 3
+		$0 start
+		;;
+	*)
+		echo "$0 [start|stop|restart|status]"
+		exit 1;
+esac
+exit $RETVAL
