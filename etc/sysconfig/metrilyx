@@ -1,0 +1,9 @@
+METRILYX_HOME=/opt/metrilyx
+LOGDIR=${METRILYX_HOME}/logs
+
+PYTHONPATH=""
+
+
+if [ ! -d $LOGDIR ]; then
+    mkdir -p $LOGDIR
+fi
