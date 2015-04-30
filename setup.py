@@ -36,8 +36,8 @@ def recursiveFileListBuilder(dirPath, prefix):
     return out
 
 DATA_FILES = [
-    ('/etc/init.d', fileListBuilder('etc/init.d')),
-    ('/usr/local/sbin/', fileListBuilder('bin')),
+    ('/opt/metrilyx/etc/init.d', fileListBuilder('etc/init.d')),
+    ('/opt/metrilyx/bin/',      fileListBuilder('bin')),
 ]
 
 

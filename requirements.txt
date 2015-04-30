@@ -1,3 +1,4 @@
+-e git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas
 pyOpenSSL
 service_identity
 autobahn[twisted,accelerate]
