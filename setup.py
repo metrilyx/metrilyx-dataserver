@@ -39,6 +39,6 @@ setup(
     license='Apache',
     install_requires=INSTALL_REQUIRES,
     #data_files=DATA_FILES,
-    dependency_links=['git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas'],
+    dependency_links=['git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas-0.0.1'],
     packages=find_packages()
 )
