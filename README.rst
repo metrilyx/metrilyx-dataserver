@@ -1,8 +1,11 @@
+===================
 Metrilyx Dataserver
 ===================
 Data analysis and delivery server. 
 
-### Requirements
+
+Requirements
+------------
 
 +---------------+---------------+
 | RHEL          | Ubuntu/Debian |
@@ -18,10 +21,7 @@ Data analysis and delivery server.
 | openssl-devel | libssl-dev    |
 +---------------+---------------+
 
-### Installation
+Installation
+------------
 
     pip install https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
-
-    git clone https://github.com/metrilyx/metrilyx-dataserver.git
-    cd metrilyx-dataserver
-    make install
