@@ -11,7 +11,8 @@ Metrilyx dataserver is the core to metrilyx and is responsible for analyzing and
 delivering data to the client.
 '''
 
-INSTALL_REQUIRES = [ 'opentsdb-pandas', 'pyOpenSSL', 'service_identity', 'autobahn[twisted,accelerate]' ]
+INSTALL_REQUIRES = [ p.strip() for p in open('requirements.txt').read().split('\n') 
+                                            if p != '' and not p.startswith('#') ]
 
 def fileListBuilder(dirPath, regexp='*'):
     matches = []
@@ -37,7 +38,7 @@ setup(
     author_email='euforia@gmail.com',
     license='Apache',
     install_requires=INSTALL_REQUIRES,
-    dependency_links=["git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas"],
     #data_files=DATA_FILES,
+    dependency_links=['git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas'],
     packages=find_packages()
 )

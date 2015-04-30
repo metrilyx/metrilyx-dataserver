@@ -29,7 +29,7 @@ start_dataserver() {
 
 	if [ "$PIDS" = "" ]; then
 		echo -n "${NAME} starting (port ${PORT})... "
-		METRILYX_HOME=${APP_HOME} PYTHONPATH=${PYTHONPATH} ${BIN} ${OPTS} &
+		METRILYX_HOME=${METRILYX_HOME} PYTHONPATH=${PYTHONPATH} ${BIN} ${OPTS} &
 		sleep 2;
 		PIDS=`${PGREP} "${BIN} ${OPTS}" | xargs`;
 		if [ "$PIDS" = "" ]; then
