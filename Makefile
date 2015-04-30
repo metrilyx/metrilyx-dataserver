@@ -10,8 +10,8 @@ clean:
 
 .pydeps:
 	which pip || { easy_install pip || exit 1; }
-
+	pip install pip --upgrade
+	pip install -r requirements.txt
 
 install: .pydeps
-	pip install git+https://github.com/metrilyx/opentsdb-pandas.git
-	pip install git+https://github.com/metrilyx/metrilyx-dataserver.git
+	python setup.py install
