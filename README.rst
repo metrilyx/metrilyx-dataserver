@@ -28,9 +28,17 @@ Requirements
 +---------------+---------------+
 | openssl-devel | libssl-dev    |
 +---------------+---------------+
+| python-devel  | python-dev    |
++---------------+---------------+
 
 
 Installation
 ------------
 
-* pip install https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
+Install the opentsdb pandas library like so:
+
+    * pip install git+https://github.com/metrilyx/opentsdb-pandas.git
+
+Once installed continue to install the dataserver:
+
+    * pip install git+https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com

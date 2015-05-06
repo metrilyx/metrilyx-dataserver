@@ -3,16 +3,10 @@ import os
 import sys
 import fnmatch
 from setuptools import setup, find_packages
-#from pprint import pprint
+
+# For version info
 import metrilyx
 
-DESCRIPTION = '''
-Metrilyx dataserver is the core to metrilyx and is responsible for analyzing and 
-delivering data to the client.
-'''
-
-INSTALL_REQUIRES = [ p.strip() for p in open('requirements.txt').read().split('\n') 
-                                            if p != '' and not p.startswith('#') ]
 
 def fileListBuilder(dirPath, regexp='*'):
     matches = []
@@ -22,10 +16,20 @@ def fileListBuilder(dirPath, regexp='*'):
     return matches
 
 
-#DATA_FILES = [
-#    ('/opt/metrilyx/etc/init.d', fileListBuilder('etc/init.d')),
-#    ('/opt/metrilyx/bin/',      fileListBuilder('bin')),
-#]
+DESCRIPTION = '''
+Metrilyx dataserver is the core to metrilyx and is responsible for analyzing and 
+delivering data to the client.
+'''
+
+INSTALL_REQUIRES = [ p.strip() for p in open('requirements.txt').read().split('\n') 
+                                            if p != '' and not p.startswith('#') ]
+DATA_FILES = [
+    ('/opt/metrilyx/etc/init.d', fileListBuilder('etc/init.d')),
+    ('/opt/metrilyx/bin/',       fileListBuilder('bin')),
+]
+
+AUTHOR = "euforia"
+AUTHOR_EMAIL = "euforia@gmail.com"
 
 
 setup(
@@ -34,11 +38,11 @@ setup(
     url='https://github.com/metrilyx/metrilyx-dataserver',
     description=DESCRIPTION,
     long_description=DESCRIPTION,
-    author='euforia',
-    author_email='euforia@gmail.com',
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
     license='Apache',
     install_requires=INSTALL_REQUIRES,
-    #data_files=DATA_FILES,
-    dependency_links=['git+https://github.com/metrilyx/opentsdb-pandas#egg=opentsdb-pandas'],
+    data_files=DATA_FILES,
+    dependency_links=['https://github.com/metrilyx/opentsdb-pandas/archive/master.zip#egg=opentsdb-pandas'],
     packages=find_packages()
 )
