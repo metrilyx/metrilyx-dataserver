@@ -29,7 +29,8 @@ Requirements
 | openssl-devel | libssl-dev    |
 +---------------+---------------+
 
+
 Installation
 ------------
 
-    pip install https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
+* pip install https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
