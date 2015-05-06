@@ -2,9 +2,9 @@
 
 import ujson as json
 
-from websock import WSFactory, PanelRequestParserWSProto
+from metrilyx.server.websock import WSFactory, PanelRequestParserWSProto
 
-from schema import panel
+from metrilyx.schema import panel
 
 from twisted.trial import unittest
 
@@ -46,6 +46,7 @@ testPanelRequest = json.dumps({
 
 class PanelRequestParserWSProtoTest(unittest.TestCase):
     
+    
     def setUp(self):
         factory = WSFactory(testWebsockUri)
         factory.setProtocol(PanelRequestParserWSProto)
@@ -55,6 +56,7 @@ class PanelRequestParserWSProtoTest(unittest.TestCase):
         self.proto = factory.buildProtocol(('127.0.0.1', 0))
         self.tr = proto_helpers.StringTransport()
         self.proto.makeConnection(self.tr)
+
 
     def test_parsePanelRequest_error(self):
         

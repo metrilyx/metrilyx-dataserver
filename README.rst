@@ -7,6 +7,13 @@ Data analysis and delivery server.
 Requirements
 ------------
 
+**System**
+
+- Atleast 1GB of memory
+- 2 or more cores/cpus
+
+**Packages**
+
 +---------------+---------------+
 | RHEL          | Ubuntu/Debian |
 +===============+===============+
@@ -32,13 +39,14 @@ Requirements
 +---------------+---------------+
 
 
+**Python**
+
+* python >= 2.7
+* pip >= 6.1.1
+
+
+
 Installation
 ------------
-
-Install the opentsdb pandas library like so:
-
-    * pip install git+https://github.com/metrilyx/opentsdb-pandas.git
-
-Once installed continue to install the dataserver:
 
     * pip install git+https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com

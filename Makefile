@@ -12,6 +12,6 @@ clean:
 	which pip || { easy_install pip || exit 1; }
 
 install: .pydeps
-	pip install .
+	pip install . -v --process-dependency-links --trusted-host github.com
 	cp -a bin /opt/metrilyx/
 	cp -a etc /opt/metrilyx/
