@@ -81,7 +81,7 @@ class OpenTSDBProvider(HttpProvider):
             #treq.json_content(response).addCallback(self.__assignData)
             logger.error(response[0])
             jd = json.loads(response[0])
-            self.data = {'error': jd['error']['message'] }
+            self.data = { 'error': jd['error']['message'] }
             self._pdfd.errback(self)
             return
         
@@ -92,8 +92,9 @@ class OpenTSDBProvider(HttpProvider):
 
 
     def __responseErrback(self, error, *args):
-        logger.error("opentsdb %s %s" % (error, args))
-        
+        logger.error("opentsdb %s %s" % (error.value.message, args))
+        #pprint(dir(error.value))
+        self.data = { "error": error.value.message }
         #self.data = error.value.json()
 
         self._pdfd.errback(self)
