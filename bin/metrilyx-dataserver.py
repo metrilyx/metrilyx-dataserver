@@ -5,7 +5,6 @@ import resource
 
 from pprint import pprint
 
-#from twisted.python import log
 from twisted.internet import reactor
 from autobahn.twisted.websocket import listenWS
 
@@ -39,9 +38,7 @@ def checkMemory(checkInterval):
 if __name__ == "__main__":
     
     parser = DataserverOptionParser()
-    (opts, args) = parser.parse_args()
-    
-    #log.startLogging(sys.stdout)
+    opts = parser.parse_args()
 
     factory = WSFactory(opts.logger, "ws://%s:%d" % (opts.hostname, opts.port), 
                                                     externalPort=opts.externalPort)
