@@ -4,8 +4,11 @@ import logging
 from twisted.internet import defer
 
 from ..server.response import ResponseData
-
 from datasource import Datasource
+
+import serializer
+import secondary
+
 from uuids import UUID
 
 from pprint import pprint
@@ -13,7 +16,6 @@ from pprint import pprint
 logger = logging.getLogger(__name__)
 
 PANEL_ATTRS = ("id", "name", "type", "size", "datasources")
-
 
 class BasePanel(object):
 
@@ -40,30 +42,25 @@ class Panel(BasePanel):
         self.datasources = [ Datasource(**ds) for ds in kwargs["datasources"] ]    
 
         if kwargs.has_key("secondaries") and kwargs["secondaries"] != None:
-            self.secondaries = kwargs["secondaries"]
+            self.secondaries = [ secondary.SecondaryMetric(**sec) for sec in kwargs["secondaries"] ]
+            #self.secondaries = kwargs["secondaries"]
         else:
             self.secondaries = []
 
 
-    def applySecondaries(self):
+    def getSecondaries(self):
         logger.debug("Checking for secondaries (%s)..." % (self.id))
         
         dss = [ ds.data for ds in self.datasources ]
-        # if opentsdb
         for ds in dss:
-            # Remove metric name so tags line up when performing the operation. 
+            # Remove metric name form column id so tags line up when performing the operation. 
             ds.columns = [ "{"+col.split("{")[1] for col in ds.columns.values ]
 
         for sec in self.secondaries:
-
-            try:
-                rslt = eval(self.secondaries[0]['operation'])(*dss)
-                print rslt.head()
-                # TODO : apply alias.
-            except Exception, e:
-                logger.error("Secondary operation failed: %s" % (e))
-                #return { "error": "Secondary operation failed: %s" % (e) }
-
+            sec.applyOperation(dss)
+            #print sec.data.head()
+            yield serializer.serialize(sec, self.type)
+            
 
 class PanelRequest(Panel):
 
@@ -86,19 +83,13 @@ class PanelRequest(Panel):
     def __onDsData(self, datasource, *args):
         logger.debug("Datasource data (id %s; type %s): %s" % (self.id, self.type, datasource))
         
-        # Only send partial response if secondaries do not
-        # need to be calculated.
-        if len(self.secondaries) == 0:
-            #
-            # TODO: this needs to be a seperate function, so as to be used by
-            # partial responses and secondary responses
-            #
-            
+        # Only send partial response if secondaries do not need to be calculated.
+        if len(self.secondaries) == 0:     
             # Serialize panel data based on panel type.
-            respData = datasource.panelTypeData(self.type)
+            #respData = datasource.serializeData(self.type)
+            respData = serializer.serialize(datasource, self.type)
             #logger.debug("====> Datapoints: %d" % (len(respData)))
             self.sendResponse(respData)
-
 
 
     def __onDsError(self, error, *args):
@@ -107,15 +98,15 @@ class PanelRequest(Panel):
 
 
     def __checkIfDone(self, *args):
+        # Decrement active count
         self.__activeSources -= 1
-        if self.__activeSources == 0:
-            #logger.info("Trigger request removal: %d" % (self.__activeSources))
-            if len(self.secondaries) > 0:
-                # TEMPORARY
-                secDf = self.applySecondaries()
-                # TODO: alias and serialize
-                self.sendResponse({"error": "Secondaries need to be implemented!"})
 
+        if self.__activeSources == 0:
+            
+            if len(self.secondaries) > 0:
+                for sec in self.getSecondaries():
+                    self.sendResponse(sec)
+        
             self.__panelRequestDone.callback(self.id)
 
 
@@ -132,7 +123,11 @@ class PanelRequest(Panel):
             # datasource deferred
             self.__activeSources += 1
             dfd = ds.fetch(**self._extraArgs)
-            dfd.addCallbacks(self.__onDsData, self.__onDsError)
+            
+            #dfd.addCallbacks(self.__onDsData, self.__onDsError)
+            dfd.addCallback(self.__onDsData)
+            dfd.addErrback(self.__onDsError)
+
             dfd.addBoth(self.__checkIfDone)
 
         return self.__panelRequestDone

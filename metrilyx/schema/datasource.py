@@ -8,19 +8,25 @@ from twisted.internet import defer
 from provider.httpprovider import HttpProvider
 from provider.opentsdb import OpenTSDBProvider
 
+import aliasing
+import serializer
+
 from uuids import UUID
+
+from pprint import pprint
+
 
 logger = logging.getLogger(__name__)
 
 # non time series graph types.
-GRAPH_TYPES_NON_TS = ("bar", "column", "pie")
+#GRAPH_TYPES_NON_TS = ("bar", "column", "pie")
 
 SUPPORTED_PROVIDERS = {
     "http": HttpProvider,
     "opentsdb": OpenTSDBProvider
 }
 
-class Datasource(object):
+class Datasource(serializer.ISerializer):
 
     def __init__(self, **kwargs):
         
@@ -34,7 +40,7 @@ class Datasource(object):
         except:
             raise RuntimeError("Datasource type not provided!")
         
-        if kwargs.has_key("alias"):
+        if kwargs.has_key("alias") and kwargs["alias"] != None:
             self.alias = kwargs["alias"]
         else:
             self.alias = ""
@@ -58,7 +64,7 @@ class Datasource(object):
         # deferred for after transform
         self.__ddfd = defer.Deferred()
 
-    
+    '''
     def __opentsdbColumnDatapoints(self, column):
         """
             Serialize each column to be shipped.
@@ -69,7 +75,7 @@ class Datasource(object):
         tsIdx = nonNanSerie.index.astype(numpy.int64)/1000000
         # re-combine timestamps and value for the column and return [(...)]
         return zip(tsIdx, nonNanSerie.values)
-    
+    '''
 
     def __onProviderResponse(self, prov, *args):
         logger.debug("%s %s %s" % (type(prov), prov, args))
@@ -109,6 +115,20 @@ class Datasource(object):
         self.__ddfd.cancel()
 
 
+    def getTransformIds(self, metas):
+        # Parse strings to dict
+        mObjs = [ aliasing.DataAlias('', mstr).parseMetadata() for mstr in metas ]
+        # Get intersection dict and convert to string
+        iMetaStr = aliasing.getMetaString(dict(set.intersection(*(set(m.iteritems()) 
+                                                                    for m in mObjs))))
+        # Get lambda function body
+        lFunc = aliasing.getLambdaContent(self.transform)
+        # Prepend lambda func to intersection string
+        suffix = lFunc+":"+iMetaStr
+        # Prepend index to create unique id.
+        return [ str(i)+":"+suffix for i in range(len(metas)-1) ]
+
+
     def applyTransform(self, df):
         """
             Applies the transfrom to a given dataframe, i.e. perform operations
@@ -116,53 +136,61 @@ class Datasource(object):
             Params:
                 df : pandas.DataFrame to transform
             Returns:
-                transformed data.
+                Transformed pandas.DataFrame
         """
     
         if self.transform != "":
             try:
-                tdf = eval(self.transform)(df)     
+                tdf = eval(self.transform)(df)
                 # Convert to dataframe if transform results in a Series
                 if isinstance(tdf, pandas.Series):
-                    # TODO : FIX naming
-                    # check if serie has name
-                    tdf = pandas.DataFrame({self.alias: tdf})
-                
+                    # Calculate id as the transform may not have one.
+                    tids = self.getTransformIds(df.columns.values)
+                    tdf = pandas.DataFrame({tids[0]: tdf})
                 return tdf
             
             except Exception,e:
-                print "Could not apply transform: ", self.transform, "err:", e
+                logger.debug("Could not apply transform: "+self.transform+", err: " + str(e))
         
         return df
 
-
-    def panelTypeData(self, panelType):
+    def aggr(self):
         """
-            All graph types must be of type pandas.DataFrame
+        Needed for serializer
+        """
+        return self.provider.aggr()
+
+
+    '''
+    def serializeData(self, panelType):
+        """
+            Serialize data based on panel type.  All graph types must be of 
+            type pandas.DataFrame
 
             Return:
-                list : Serialized data based on the panel type
+                list : Serialized data based on panel type
 
         """
         if panelType in GRAPH_TYPES_NON_TS:
+            # Serialize non-timeseries graphs
             out = []
 
-            for col in self.data:
+            for colName in self.data:
             
-                #logger.debug(">>>>> %s" % (col))
-                nAlias = self.provider.normalizedAlias(col, self.alias)
-                #logger.debug(">>>>> After: %s" % (col))
-                cleanCol = self.data[col].replace([numpy.inf, -numpy.inf], numpy.nan).dropna()
+                #logger.debug(">>>>> %s" % (colName))
+                nAlias = self.provider.normalizedAlias(colName, self.alias)
+                #logger.debug(">>>>> After: %s" % (colName))
+                cleanCol = self.data[colName].replace([numpy.inf, -numpy.inf], numpy.nan).dropna()
                 #logger.debug("Aggregator: %s" % (self.provider.aggr()))
                 if self.provider.aggr() == "avg":
                     out.append({
-                        "id": col,
+                        "id": colName,
                         "alias": nAlias,
                         "data": cleanCol.mean()
                     })
                 else:
                     out.append({
-                        "id": col,
+                        "id": colName,
                         "alias": nAlias,
                         "data": eval("cleanCol.%s()" % (self.provider.aggr()))
                     })
@@ -192,6 +220,5 @@ class Datasource(object):
                 "id": col,
                 "data": self.__opentsdbColumnDatapoints(self.data[col])
                 } for col in self.data.columns ]
-
-
+    '''
 

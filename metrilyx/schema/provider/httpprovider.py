@@ -6,6 +6,7 @@ import pandas
 from interface import IProvider
 
 from ...httpclient import HttpClient
+from .. import aliasing
 
 import logging
 
@@ -46,6 +47,8 @@ class HttpProvider(IProvider):
         self.data = None
 
     def normalizedAlias(self, metaStr, aliasStr):
+        ''' THIS DOES NOT WORK.  NEEDS FIXING '''
+        '''
         nAlias = metaStr
         if aliasStr.startswith("lambda"):
             try:
@@ -67,6 +70,12 @@ class HttpProvider(IProvider):
         
         if nAlias == "":
             nAlias = metaStr
+
+        return nAlias
+        '''
+        nAlias = aliasing.DataAlias(aliasStr, metaStr).alias()
+        if nAlias == "":
+            return metaStr
 
         return nAlias
 

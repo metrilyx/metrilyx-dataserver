@@ -6,6 +6,7 @@ from httpprovider import HttpProvider
 from opentsdb_pandas.response import OpenTSDBResponse
 
 from ...httpclient import HttpClient
+from .. import aliasing
 
 import logging
 
@@ -135,48 +136,13 @@ class OpenTSDBProvider(HttpProvider):
         return self._pdfd
 
 
-    def __parseId(self, _id):
-        """ Parse column id for metadata used to normalize the alias """
-        if "{" in _id:
-            (metric, tags) = _id.split("{")
-            tags = tags[:-1]
-            
-            meta = { "metric": metric }
-            for tkv in tags.split(","):
-                (tk, tv) = tkv.split("=")
-                meta['tags.'+tk] = tv
-            return meta
-        else:
-            return { "metric": _id }
-
-
     def normalizedAlias(self, metaStr, aliasStr):
         """
             metaStr: dataframe column id containing the full tsdb metric name
             aliasStr : alias to apply
         """
-        
-        logger.debug("!!!!!++++> "+metaStr)
-        meta = self.__parseId(metaStr)
-        
-        nAlias = metaStr
-        if aliasStr.startswith("lambda"):
-            try:
-                nAlias = eval(aliasStr)(meta)
-            except Exception, e:
-                logger.warn("Failed to apply alias (lambda): "+aliasStr)
-        
-        elif aliasStr.startswith("!lambda"):
-            try:
-                nAlias = eval(aliasStr[1:])(meta)
-            except Exception, e:
-                logger.warn("Failed to apply alias (lambda): "+aliasStr[1:])
-
-        else:
-            try:
-                nAlias = aliasStr % (meta)
-            except Exception, e:
-                logger.warn("Failed to apply alias (string formatted): "+aliasStr)
+        nAlias = aliasing.DataAlias(aliasStr, metaStr).alias()
+        logger.debug("Alias: %s" %(nAlias))
         
         if nAlias == "":
             utags = self.query.uniqueTagKeys()
