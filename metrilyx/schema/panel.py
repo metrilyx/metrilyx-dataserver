@@ -87,6 +87,7 @@ class PanelRequest(Panel):
         if len(self.secondaries) == 0:     
             # Serialize panel data based on panel type.
             #respData = datasource.serializeData(self.type)
+            print datasource.data.head()
             respData = serializer.serialize(datasource, self.type)
             #logger.debug("====> Datapoints: %d" % (len(respData)))
             self.sendResponse(respData)

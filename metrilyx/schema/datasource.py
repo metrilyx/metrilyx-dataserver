@@ -15,11 +15,7 @@ from uuids import UUID
 
 from pprint import pprint
 
-
 logger = logging.getLogger(__name__)
-
-# non time series graph types.
-#GRAPH_TYPES_NON_TS = ("bar", "column", "pie")
 
 SUPPORTED_PROVIDERS = {
     "http": HttpProvider,
@@ -64,18 +60,6 @@ class Datasource(serializer.ISerializer):
         # deferred for after transform
         self.__ddfd = defer.Deferred()
 
-    '''
-    def __opentsdbColumnDatapoints(self, column):
-        """
-            Serialize each column to be shipped.
-        """
-        # drop NaN values
-        nonNanSerie = column.replace([numpy.inf, -numpy.inf], numpy.nan).dropna()
-        # convert timestamp to milliseconds
-        tsIdx = nonNanSerie.index.astype(numpy.int64)/1000000
-        # re-combine timestamps and value for the column and return [(...)]
-        return zip(tsIdx, nonNanSerie.values)
-    '''
 
     def __onProviderResponse(self, prov, *args):
         logger.debug("%s %s %s" % (type(prov), prov, args))
@@ -89,7 +73,7 @@ class Datasource(serializer.ISerializer):
             df = prov.data
 
         self.data = self.applyTransform(df)
-
+        # TODO: set MultiIndex based on unique tags.
         self.__ddfd.callback(self)
 
 
@@ -159,66 +143,4 @@ class Datasource(serializer.ISerializer):
         Needed for serializer
         """
         return self.provider.aggr()
-
-
-    '''
-    def serializeData(self, panelType):
-        """
-            Serialize data based on panel type.  All graph types must be of 
-            type pandas.DataFrame
-
-            Return:
-                list : Serialized data based on panel type
-
-        """
-        if panelType in GRAPH_TYPES_NON_TS:
-            # Serialize non-timeseries graphs
-            out = []
-
-            for colName in self.data:
-            
-                #logger.debug(">>>>> %s" % (colName))
-                nAlias = self.provider.normalizedAlias(colName, self.alias)
-                #logger.debug(">>>>> After: %s" % (colName))
-                cleanCol = self.data[colName].replace([numpy.inf, -numpy.inf], numpy.nan).dropna()
-                #logger.debug("Aggregator: %s" % (self.provider.aggr()))
-                if self.provider.aggr() == "avg":
-                    out.append({
-                        "id": colName,
-                        "alias": nAlias,
-                        "data": cleanCol.mean()
-                    })
-                else:
-                    out.append({
-                        "id": colName,
-                        "alias": nAlias,
-                        "data": eval("cleanCol.%s()" % (self.provider.aggr()))
-                    })
-            
-            return out
-        
-        elif panelType == "list":
-            
-            return [{
-                "id": "",
-                "alias": self.alias,
-                "data": it,
-            } for it in self.data]
-
-        elif panelType == "text":
-            
-            return {
-                "id":"",
-                "alias": self.alias,
-                "data": self.data
-            }
-        else:
-            #logger.debug("TSDATA")
-            # Time Series data.
-            return [{
-                "alias": self.provider.normalizedAlias(col, self.alias),
-                "id": col,
-                "data": self.__opentsdbColumnDatapoints(self.data[col])
-                } for col in self.data.columns ]
-    '''
 

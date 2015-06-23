@@ -109,6 +109,8 @@ class OpenTSDBProvider(HttpProvider):
         #if not kwargs.has_key("start"):
         #    self._client.response.errback("OpenTSDB 'start' key required!")
         #prefix = ""
+        print "-=> ", kwargs
+
         prefix = "start=%s&" % (kwargs["start"])
 
         if kwargs.has_key("end"):
@@ -118,6 +120,11 @@ class OpenTSDBProvider(HttpProvider):
             prefix += "m=%s:rate:%s" % (self.query.aggregator, self.query.metric)
         else:
             prefix += "m=%s:%s" % (self.query.aggregator, self.query.metric)
+
+        # Apply global tags.
+        if kwargs.has_key("tags"):
+            for k,v in kwargs["tags"].items():
+                self.query.tags[k] = v
 
         tags = ",".join(["%s=%s" % (k,v) for k,v in self.query.tags.items()])
         
