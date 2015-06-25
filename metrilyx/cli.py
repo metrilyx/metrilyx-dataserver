@@ -1,5 +1,5 @@
 """
-    Command line option parser
+    Command line parser
 """
 
 import os
@@ -20,7 +20,7 @@ LOG_BASENAME = "metrilyx-dataserver"
 class DataserverOptionParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs):
-        #OptionParser.__init__(self, *args, **kwargs)
+
         super(DataserverOptionParser, self).__init__(*args, **kwargs)
 
         self.add_argument("-l", "--log-level", dest="logLevel", default="INFO",
@@ -36,14 +36,11 @@ class DataserverOptionParser(argparse.ArgumentParser):
             help="External port if running behind a proxy such as nginx. This would be the port of \
             the proxy, usually port 80.")
 
-        self.add_argument("-c", "--check-interval", dest="checkInterval", default=15.0, type=float, 
-            help="Interval to check for process stats. (default: 15.0 secs)")
+        self.add_argument("-c", "--check-interval", dest="checkInterval", default=300.0, type=float, 
+            help="Interval to check for process stats. (default: 5 mins)")
         self.add_argument("-V", "--version", default=False, action="store_true",
             help="Show version.")
-        
-        #self.add_option("--max-memory", dest="maxAllowedMemory", type="float", default=1500.0,
-        #    help="Maximum allowed memory (MB) before server is gracefully respawned. (default: 1500.0 MB)")
-    
+
 
     def __getLogger(self, opts):
         opts.logLevel = opts.logLevel.upper()
