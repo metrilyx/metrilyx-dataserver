@@ -16,8 +16,10 @@ fi
 NAME="metrilyx-dataserver"
 BIN=${APP_HOME}/bin/${NAME}.py
 LOGLEVEL="WARNING"
-PGREP="/usr/bin/pgrep -f"
+
 DEFAULT_OPTS="-e 80 -l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname)"
+
+PGREP="/usr/bin/pgrep -f"
 
 RETVAL=0
 

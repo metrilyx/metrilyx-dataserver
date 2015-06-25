@@ -15,6 +15,4 @@ clean:
 
 install: .pydeps
 	pip install . -v --process-dependency-links --trusted-host github.com
-	cp -a bin /opt/metrilyx/
-	cp -a etc /opt/metrilyx/
 
