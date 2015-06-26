@@ -25,7 +25,7 @@ INSTALL_REQUIRES = [ p.strip() for p in open('requirements.txt').read().split('\
                                             if p != '' and not p.startswith('#') ]
 DATA_FILES = [
     ('/opt/metrilyx/etc/init.d', fileListBuilder('etc/init.d')),
-    ('/opt/metrilyx/bin/',       fileListBuilder('bin')),
+    ('/opt/metrilyx/bin/',       ['metrilyx-dataserver.py']),
 ]
 
 AUTHOR = "euforia"
