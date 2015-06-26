@@ -9,7 +9,8 @@ Requirements
 
 **System**
 
-- Atleast 1GB of memory
+- Centos/Oracle/RHEL 7, Ubuntu 14.04
+- Atleast 2GB of memory
 - 2 or more cores/cpus
 
 **Packages**
