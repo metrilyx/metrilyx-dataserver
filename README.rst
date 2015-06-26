@@ -54,8 +54,10 @@ Installation
 
 Startup
 -------
-The installation will also install startup services.  The following files are installed:
+The installation also provides a startup script:
     
-    * /etc/init.d/metrilyx-dataserver
-    * /etc/sysconfig/metrilyx
+    * /opt/metrilyx/etc/init.d/metrilyx-dataserver
 
+Copy this to the appropriate place, then issue:
+
+    * <path>/metrilyx-dataserver start
