@@ -51,3 +51,11 @@ Installation
 ------------
 
     * pip install git+https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
+
+Startup
+-------
+The installation will also install startup services.  The following files are installed:
+    
+    * /etc/init.d/metrilyx-dataserver
+    * /etc/sysconfig/metrilyx
+

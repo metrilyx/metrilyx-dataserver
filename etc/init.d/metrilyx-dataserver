@@ -6,22 +6,25 @@
 
 [ -f "/etc/rc.d/init.d/functions" ] && . /etc/rc.d/init.d/functions
 
-if [ -f "/etc/sysconfig/metrilyx" ]; then
-	. /etc/sysconfig/metrilyx
-else
-	echo "/etc/sysconfig/metrilyx not found!";
-	exit 1;
-fi
 
 NAME="metrilyx-dataserver"
-BIN=${APP_HOME}/bin/${NAME}.py
+METRILYX_HOME="/opt/metrilyx"
+
+LOGDIR="$METRILYX_HOME/logs"
 LOGLEVEL="WARNING"
 
+BIN=${METRILYX_HOME}/bin/${NAME}.py
 DEFAULT_OPTS="-e 80 -l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname)"
 
 PGREP="/usr/bin/pgrep -f"
 
 RETVAL=0
+
+check_logdir() {
+	if [ ! -d "$LOGDIR" ]; then
+	    mkdir -p $LOGDIR;
+	fi
+}
 
 # Starts a single dataserver
 start_dataserver() {
