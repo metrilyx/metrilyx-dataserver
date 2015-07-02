@@ -10,7 +10,9 @@ before_install:
     - sudo apt-get install ruby ruby-dev make rpm rubygems
     - gem install fpm --no-ri --no-rdoc
 
-script:
+install:
     - make
+
+script:
     - make .rpm
     - make .deb
