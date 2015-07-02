@@ -6,12 +6,13 @@ python:
 before_install:
     - sudo apt-get -y update
     - sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid make libssl-dev python-dev
+    - pip install pip --upgrade
     # For package building
     - sudo apt-get install ruby ruby-dev make rpm rubygems
     - gem install fpm --no-ri --no-rdoc
 
 install:
-    - make
+    - sudo make
 
 script:
     - make .rpm
