@@ -5,18 +5,24 @@
 #
 
 [ -f "/etc/rc.d/init.d/functions" ] && . /etc/rc.d/init.d/functions
-
+PGREP="/usr/bin/pgrep -f"
 
 NAME="metrilyx-dataserver"
 METRILYX_HOME="/opt/metrilyx"
-
+BIN=${METRILYX_HOME}/bin/${NAME}.py
 LOGDIR="$METRILYX_HOME/logs"
 LOGLEVEL="WARNING"
+#
+# Number of servers to spawn. Increase based on cpu's
+SERVER_COUNT=1
 
-BIN=${METRILYX_HOME}/bin/${NAME}.py
-DEFAULT_OPTS="-e 80 -l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname)"
 
-PGREP="/usr/bin/pgrep -f"
+#
+# Used if running websocket from behind a proxy
+#EXT_PORT_OPT="-e 80"
+EXT_PORT_OPT=""
+
+DEFAULT_OPTS="-l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname) ${EXT_PORT_OPT}"
 
 RETVAL=0
 
