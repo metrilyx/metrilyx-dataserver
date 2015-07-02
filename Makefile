@@ -7,7 +7,7 @@ BUILD_DIR_BASE = ./build
 BUILD_DIR = ${BUILD_DIR_BASE}/${NAME}
 
 .clean:
-	rm -rvf ${BUILD_DIR_BASE}
+	rm -rf ${BUILD_DIR_BASE}
 	rm -rf ./dist
 	rm -rf ./metrilyx_dataserver.egg-info
 	rm -rf ./_trial_temp
@@ -16,13 +16,13 @@ BUILD_DIR = ${BUILD_DIR_BASE}/${NAME}
 .install:
 	pip install . --process-dependency-links --trusted-host github.com
 
-.rpm:
+.rpm: .clean
 	[ -d ${BUILD_DIR_BASE} ] || mkdir -p ${BUILD_DIR_BASE}
-	cd ${BUILD_DIR_BASE} &&  fpm -s python -t rpm -n ${NAME} --version ${VERSION} ${NAME}
+	cd ${BUILD_DIR_BASE} &&  fpm -s python -t rpm ../setup.py
 
-.deb:
+.deb: .clean
 	[ -d ${BUILD_DIR_BASE} ] || mkdir -p ${BUILD_DIR_BASE}
-	cd ${BUILD_DIR_BASE} &&  fpm -s python -t deb -n ${NAME} --version ${VERSION} ${NAME}
+	cd ${BUILD_DIR_BASE} &&  fpm -s python -t deb ../setup.py
 
 
 all: .clean .install
