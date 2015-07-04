@@ -1,46 +1,34 @@
 language: python
-
 python:
-    - 2.7
-
+- 2.7
 before_install:
-    - sudo apt-get -y update
-    - sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid make libssl-dev python-dev python-numpy
-    - pip install pip --upgrade
-    # For package building
-    - sudo apt-get -y install ruby ruby-dev make rpm rubygems
-    - gem install fpm --no-ri --no-rdoc
-
+- sudo apt-get -y update
+- sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid make libssl-dev python-dev python-numpy
+- pip install pip --upgrade
+- sudo apt-get -y install ruby ruby-dev make rpm rubygems
+- gem install fpm --no-ri --no-rdoc
 install:
-    - sudo make
-
+- sudo make
 script:
-    - make .rpm
-    - make .deb
-
+- make .rpm
+- make .deb
 deploy:
+  matrix:
   - provider: packagecloud
     repository: metrilyx
     username: metrilyx
-    local-dir: "build/ubuntu"
-    dist: "ubuntu/trusty"
+    local-dir: build/ubuntu
+    dist: ubuntu/trusty
     skip_cleanup: true
-    token:
-      secure: bTTh7hOUhiEqms5LgzYBcoUjLLKvVyyj5Cj9E/uuaVn34CJvhHAewDnzkb5NULfc3ahoVvWoJkSyu/F7B6jrDn/TSmeP/QCcTaozY43sv8C6lofw9ZkZBQT/f6UdP3hcu/n+zNRQMwGlc2W3oLX06RjaPIdPsqWOiblnL+D1Im7ETgf4A9nY8DpLtFZAaq0mmLPQOuvWWSlD5hNkMoI7V2LFHwJ8KagLq8+QGCYJIB+vN/q2KFF9l68MG8ZgXma+7E/qQFmeR4+RLLVm+vI4oxi2BYn0l0zR+WNn1EAlauAkkLtdNL5gzIe/IMNIv5709bqNxSMpRnzi03UpZ6VhlzFcTP8AAmReWw+NoAY734MIXd9B8Jdvu/brlTUC4DGkcw+hzLhyJRBS3JjlRmYq9ghUPelXyhCopjCoQydGYu5WN1bpjORcFKTNycwFJTq/KHtGAicz12/fj6c9TNJD+EghgExoPANKxbO+qHQUm+pEwRnE5hDdtL/8ELsqiY9Zcg7fkjcv6jdO+YWiWy3JDcZ6kNLX10LU14RH9f0o2uExRBKcsD87Z9F590foqYMkQu2s0D51eV508KEt6QMD9u4w+mIKceDPhyiFmC8TclBkLQzKSVMMMJcA3BRneOxoQnNys2J1PwKeMdZhW4XC4ouCgCM5InELS9LSgFdHsqg=
-    on:
-      tags: true
   - provider: packagecloud
     repository: metrilyx
     username: metrilyx
-    local-dir: "build/el"
-    dist: "el/7"
+    local-dir: build/el
+    dist: el/7
     skip_cleanup: true
-    token:
-      secure: bTTh7hOUhiEqms5LgzYBcoUjLLKvVyyj5Cj9E/uuaVn34CJvhHAewDnzkb5NULfc3ahoVvWoJkSyu/F7B6jrDn/TSmeP/QCcTaozY43sv8C6lofw9ZkZBQT/f6UdP3hcu/n+zNRQMwGlc2W3oLX06RjaPIdPsqWOiblnL+D1Im7ETgf4A9nY8DpLtFZAaq0mmLPQOuvWWSlD5hNkMoI7V2LFHwJ8KagLq8+QGCYJIB+vN/q2KFF9l68MG8ZgXma+7E/qQFmeR4+RLLVm+vI4oxi2BYn0l0zR+WNn1EAlauAkkLtdNL5gzIe/IMNIv5709bqNxSMpRnzi03UpZ6VhlzFcTP8AAmReWw+NoAY734MIXd9B8Jdvu/brlTUC4DGkcw+hzLhyJRBS3JjlRmYq9ghUPelXyhCopjCoQydGYu5WN1bpjORcFKTNycwFJTq/KHtGAicz12/fj6c9TNJD+EghgExoPANKxbO+qHQUm+pEwRnE5hDdtL/8ELsqiY9Zcg7fkjcv6jdO+YWiWy3JDcZ6kNLX10LU14RH9f0o2uExRBKcsD87Z9F590foqYMkQu2s0D51eV508KEt6QMD9u4w+mIKceDPhyiFmC8TclBkLQzKSVMMMJcA3BRneOxoQnNys2J1PwKeMdZhW4XC4ouCgCM5InELS9LSgFdHsqg=
-    on:
-      tags: true
-
+  token:
+    secure: l08TMy9PqJEVJ6p/5vETzfxx0Gb7o8UzuT0hCqCjsPLgjl+4pAJTvwEdn/XfWTjbgkKwNgRpBOhJZjrva75lkKvyyQH5eJ9wbc19VA1y+R9SMZzkFmh+NHBleqdqrW6LNC1+sVWr6PymO+V7N5Ok0Yn38/t91Et85y7GIaVBQVg=
 notifications:
-    slack:
-        rooms:
-          - ticketmaster:E5CXbILXq45Y5LYcsO8BD3B3#metrilyx
+  slack:
+    rooms:
+    - ticketmaster:E5CXbILXq45Y5LYcsO8BD3B3#metrilyx

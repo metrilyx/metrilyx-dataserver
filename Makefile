@@ -16,11 +16,11 @@ BUILD_DIR = ${BUILD_DIR_BASE}/${NAME}
 .install:
 	pip install . --process-dependency-links --trusted-host github.com
 
-.rpm: .clean
+.rpm: 
 	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
 	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm ../../setup.py
 
-.deb: .clean
+.deb:
 	[ -d ${BUILD_DIR_BASE}/ubuntu ] || mkdir -p ${BUILD_DIR_BASE}/ubuntu
 	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb ../../setup.py
 
