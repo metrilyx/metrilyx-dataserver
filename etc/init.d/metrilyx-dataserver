@@ -1,10 +1,11 @@
 #!/bin/sh
 #
-# chkconfig: 234 90 10
 # description: Metrilyx Data Server.  This provides data via websockets.
 #
 
 [ -f "/etc/rc.d/init.d/functions" ] && . /etc/rc.d/init.d/functions
+[ -f "/etc/sysconfig/metrilyx" ] && . /etc/sysconfig/metrilyx
+
 PGREP="/usr/bin/pgrep -f"
 
 NAME="metrilyx-dataserver"
@@ -15,10 +16,9 @@ LOGLEVEL="WARNING"
 #
 # Number of servers to spawn. Increase based on cpu's
 SERVER_COUNT=1
-
-
 #
 # Used if running websocket from behind a proxy
+#
 #EXT_PORT_OPT="-e 80"
 EXT_PORT_OPT=""
 
@@ -26,13 +26,26 @@ DEFAULT_OPTS="-l${LOGLEVEL} --log-dir ${LOGDIR} --hostname $(hostname) ${EXT_POR
 
 RETVAL=0
 
+#
+# Detect number of cpu's/cores on the system
+#
+set_server_count() {
+	[ -f /proc/cpuinfo ] || {
+		svrcnt = $(cat /proc/cpuinfo | grep processor | wc -l)
+		if [ $svrcnt -gt 1 ]; then
+			SERVER_COUNT=`expr  $svrcnt \- 1`
+		fi
+	}
+}
+
 check_logdir() {
 	if [ ! -d "$LOGDIR" ]; then
 	    mkdir -p $LOGDIR;
 	fi
 }
-
+#
 # Starts a single dataserver
+#
 start_dataserver() {
 	PORT=$1
 	OPTS="${DEFAULT_OPTS} --port ${PORT}";
@@ -54,9 +67,12 @@ start_dataserver() {
 		RETVAL=1
 	fi
 }
-
-# start $SERVER_COUNT instances
+#
+# Start $SERVER_COUNT instances of the dataserver
+#
 start() {
+	set_server_count;
+
 	for c in `seq ${SERVER_COUNT}`; do
 		PORT=`expr 9000 \+ $c`
 		start_dataserver $PORT;
