@@ -11,8 +11,8 @@ PYTHON_LIB_DIR = ${INSTALL_DIR}/lib/python2.7/site-packages
 AB_RPM_DEPS = -d python-twisted-core -d python-wsaccel -d 'python-six >= 1.6.1'
 AB_DEB_DEPS = -d python-twisted -d python-wsaccel -d 'python-six >= 1.6.1'
 
-RPM_DEPS = -d python-autobahn -d python-ujson
-DEB_DEPS = -d python-autobahn -d python-ujson
+RPM_DEPS = -d python-autobahn -d python-ujson -d libuuid
+DEB_DEPS = -d python-autobahn -d python-ujson -d libuuid1
 
 .clean:
 	rm -rf ${BUILD_DIR_BASE}
