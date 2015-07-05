@@ -10,25 +10,8 @@ before_install:
 install:
 - make
 script:
-- make .rpm
-- make .deb
-deploy:
-  - provider: packagecloud
-    repository: metrilyx
-    username: metrilyx
-    local-dir: build/ubuntu
-    dist: ubuntu/trusty
-    skip_cleanup: true
-    token:
-      secure: S63R5TOtWX1KhZpjl1SbMVQuxQ8l22D54ODg514/DsdXGuAmdHVnYXoGHzHMzlusACL4+oaTiZnAqif+XWrjxFtLHtY1GiqK7wE/vqF21ymb2P+jz+usvYhEkfjrJReWj9NroUAnlci3l7aZ8SsbES1wHEJnZswmcZiQHR6mgKQ=
-  - provider: packagecloud
-    repository: metrilyx
-    username: metrilyx
-    local-dir: build/el
-    dist: el/7
-    skip_cleanup: true
-    token:
-      secure: S63R5TOtWX1KhZpjl1SbMVQuxQ8l22D54ODg514/DsdXGuAmdHVnYXoGHzHMzlusACL4+oaTiZnAqif+XWrjxFtLHtY1GiqK7wE/vqF21ymb2P+jz+usvYhEkfjrJReWj9NroUAnlci3l7aZ8SsbES1wHEJnZswmcZiQHR6mgKQ=
+- "[ -f /opt/metrilyx/bin/metrilyx-dataserver.py ]"
+
 notifications:
   slack:
     rooms:
