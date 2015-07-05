@@ -24,7 +24,16 @@ DEB_DEPS = -d python-autobahn -d python-ujson -d libuuid1
 .install:
 	pip install . --process-dependency-links --trusted-host github.com
 
-# Wsaccel
+# python-six
+.six_rpm:
+	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
+	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --python-install-lib ${PYTHON_LIB_DIR} six
+
+.six_deb:
+	[ -d ${BUILD_DIR_BASE}/ubuntu ] || mkdir -p ${BUILD_DIR_BASE}/ubuntu
+	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --python-install-lib ${PYTHON_LIB_DIR} six
+
+# python-wsaccel
 .wsaccel_rpm:
 	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
 	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --python-install-lib ${PYTHON_LIB_DIR} wsaccel
@@ -33,7 +42,7 @@ DEB_DEPS = -d python-autobahn -d python-ujson -d libuuid1
 	[ -d ${BUILD_DIR_BASE}/ubuntu ] || mkdir -p ${BUILD_DIR_BASE}/ubuntu
 	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --python-install-lib ${PYTHON_LIB_DIR} wsaccel
 
-# Autobahn
+# python-autobahn
 .autobahn_rpm:
 	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
 	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --no-python-dependencies --python-install-lib ${PYTHON_LIB_DIR} ${AB_RPM_DEPS} autobahn
@@ -43,11 +52,11 @@ DEB_DEPS = -d python-autobahn -d python-ujson -d libuuid1
 	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --no-python-dependencies --python-install-lib ${PYTHON_LIB_DIR} ${AB_DEB_DEPS} autobahn
 
 # App
-.rpm: .wsaccel_rpm .autobahn_rpm
+.rpm: .wsaccel_rpm .six_rpm .autobahn_rpm
 	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
 	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --python-install-lib ${PYTHON_LIB_DIR} ${RPM_DEPS} ../../setup.py
 
-.deb: .wsaccel_deb .autobahn_deb
+.deb: .wsaccel_deb .six_deb .autobahn_deb
 	[ -d ${BUILD_DIR_BASE}/ubuntu ] || mkdir -p ${BUILD_DIR_BASE}/ubuntu
 	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --python-install-lib ${PYTHON_LIB_DIR} ${DEB_DEPS} ../../setup.py
 
