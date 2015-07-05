@@ -3,7 +3,8 @@ python:
 - 2.7
 before_install:
 - sudo apt-get -y update
-- sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid make libssl-dev python-dev python-numpy
+- sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid
+  make libssl-dev python-dev python-numpy
 - pip install pip --upgrade
 - sudo apt-get -y install ruby ruby-dev make rpm rubygems
 - gem install fpm --no-ri --no-rdoc
@@ -17,12 +18,16 @@ deploy:
     local-dir: build/ubuntu
     dist: ubuntu/trusty
     skip_cleanup: true
+    token:
+      secure: S63R5TOtWX1KhZpjl1SbMVQuxQ8l22D54ODg514/DsdXGuAmdHVnYXoGHzHMzlusACL4+oaTiZnAqif+XWrjxFtLHtY1GiqK7wE/vqF21ymb2P+jz+usvYhEkfjrJReWj9NroUAnlci3l7aZ8SsbES1wHEJnZswmcZiQHR6mgKQ=
   - provider: packagecloud
     repository: metrilyx
     username: metrilyx
     local-dir: build/el
     dist: el/7
     skip_cleanup: true
+    token:
+      secure: S63R5TOtWX1KhZpjl1SbMVQuxQ8l22D54ODg514/DsdXGuAmdHVnYXoGHzHMzlusACL4+oaTiZnAqif+XWrjxFtLHtY1GiqK7wE/vqF21ymb2P+jz+usvYhEkfjrJReWj9NroUAnlci3l7aZ8SsbES1wHEJnZswmcZiQHR6mgKQ=
 notifications:
   slack:
     rooms:
