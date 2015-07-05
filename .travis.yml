@@ -7,13 +7,10 @@ before_install:
 - pip install pip --upgrade
 - sudo apt-get -y install ruby ruby-dev make rpm rubygems
 - gem install fpm --no-ri --no-rdoc
-install:
-- sudo make
 script:
 - make .rpm
 - make .deb
 deploy:
-  matrix:
   - provider: packagecloud
     repository: metrilyx
     username: metrilyx
@@ -26,8 +23,6 @@ deploy:
     local-dir: build/el
     dist: el/7
     skip_cleanup: true
-  token:
-    secure: l08TMy9PqJEVJ6p/5vETzfxx0Gb7o8UzuT0hCqCjsPLgjl+4pAJTvwEdn/XfWTjbgkKwNgRpBOhJZjrva75lkKvyyQH5eJ9wbc19VA1y+R9SMZzkFmh+NHBleqdqrW6LNC1+sVWr6PymO+V7N5Ok0Yn38/t91Et85y7GIaVBQVg=
 notifications:
   slack:
     rooms:
