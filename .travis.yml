@@ -8,7 +8,7 @@ before_install:
 - sudo apt-get -y install ruby ruby-dev make rpm rubygems
 - gem install fpm --no-ri --no-rdoc
 install:
-- make
+- sudo make
 script:
 - "[ -f /opt/metrilyx/bin/metrilyx-dataserver.py ]"
 
