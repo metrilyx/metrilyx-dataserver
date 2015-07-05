@@ -8,11 +8,11 @@ BUILD_DIR = ${BUILD_DIR_BASE}/${NAME}
 INSTALL_DIR = /opt/metrilyx
 PYTHON_LIB_DIR = ${INSTALL_DIR}/lib/python2.7/site-packages
 
-AB_DEB_DEPS = -d python-twisted -d python-wsaccel
-AB_RPM_DEPS = -d python-twisted-core -d python-wsaccel
+AB_RPM_DEPS = -d python-twisted-core -d python-wsaccel -d 'python-six >= 1.6.1'
+AB_DEB_DEPS = -d python-twisted -d python-wsaccel -d 'python-six >= 1.6.1'
 
-DEB_DEPS = -d python-autobahn
-RPM_DEPS = -d python-autobahn
+RPM_DEPS = -d python-autobahn -d python-ujson
+DEB_DEPS = -d python-autobahn -d python-ujson
 
 .clean:
 	rm -rf ${BUILD_DIR_BASE}
@@ -36,11 +36,11 @@ RPM_DEPS = -d python-autobahn
 # Autobahn
 .autobahn_rpm:
 	[ -d ${BUILD_DIR_BASE}/el ] || mkdir -p ${BUILD_DIR_BASE}/el
-	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --python-install-lib ${PYTHON_LIB_DIR} ${AB_RPM_DEPS} autobahn
+	cd ${BUILD_DIR_BASE}/el &&  fpm -s python -t rpm --no-python-dependencies --python-install-lib ${PYTHON_LIB_DIR} ${AB_RPM_DEPS} autobahn
 
 .autobahn_deb:
 	[ -d ${BUILD_DIR_BASE}/ubuntu ] || mkdir -p ${BUILD_DIR_BASE}/ubuntu
-	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --python-install-lib ${PYTHON_LIB_DIR} ${AB_DEB_DEPS} autobahn
+	cd ${BUILD_DIR_BASE}/ubuntu &&  fpm -s python -t deb --no-python-dependencies --python-install-lib ${PYTHON_LIB_DIR} ${AB_DEB_DEPS} autobahn
 
 # App
 .rpm: .wsaccel_rpm .autobahn_rpm
