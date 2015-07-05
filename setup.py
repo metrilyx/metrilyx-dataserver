@@ -15,8 +15,8 @@ def fileListBuilder(dirPath, regexp='*'):
             matches.append(os.path.join(root, filename))
     return matches
 
-
-DESCRIPTION = '''
+DESCRIPTION = "Metrilyx data delivery server"
+LONG_DESCRIPTION = '''
 Metrilyx dataserver is the core to metrilyx and is responsible for analyzing and 
 delivering data to the client.
 '''
@@ -31,13 +31,12 @@ DATA_FILES = [
 AUTHOR = "euforia"
 AUTHOR_EMAIL = "euforia@gmail.com"
 
-
 setup(
     name='metrilyx-dataserver',
     version=metrilyx.version,
     url='https://github.com/metrilyx/metrilyx-dataserver',
     description=DESCRIPTION,
-    long_description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license='Apache',
