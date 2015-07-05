@@ -3,8 +3,7 @@ python:
 - 2.7
 before_install:
 - sudo apt-get -y update
-- sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid
-  make libssl-dev python-dev python-numpy
+- sudo apt-get -y install libatlas-dev libblas-dev g++ gcc gfortran libffi-dev uuid make libssl-dev python-dev python-numpy
 - pip install pip --upgrade
 - sudo apt-get -y install ruby ruby-dev make rpm rubygems
 - gem install fpm --no-ri --no-rdoc
