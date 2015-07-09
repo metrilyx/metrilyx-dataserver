@@ -51,14 +51,14 @@ Requirements
 Installation
 ------------
 
-    * pip install git+https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
+* pip install git+https://github.com/metrilyx/metrilyx-dataserver.git --process-dependency-links --trusted-host github.com
 
 Startup
 -------
 The installation also provides a startup script:
     
-    * /opt/metrilyx/etc/init.d/metrilyx-dataserver
+* /opt/metrilyx/etc/init.d/metrilyx-dataserver
 
 Copy this to the appropriate place, then issue:
 
-    * <path>/metrilyx-dataserver start
+* <path>/metrilyx-dataserver start

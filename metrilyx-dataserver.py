@@ -3,8 +3,6 @@
 import sys
 import resource
 
-from pprint import pprint
-
 from twisted.internet import reactor
 from autobahn.twisted.websocket import listenWS
 
@@ -28,11 +26,10 @@ def getMemUsage():
     return float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) / rusage_denom
 
 
-def checkMemory(checkInterval):
+def checkMemory(checkInterval, logger):
     """ Get memory usage and schedule next check """
-
-    print "* ==> Memory: %f MBs" % (getMemUsage())
-    reactor.callLater(checkInterval, checkMemory, checkInterval)
+    logger.info("Consumed memory: %f MB's" % (getMemUsage()))
+    reactor.callLater(checkInterval, checkMemory, checkInterval, logger)
 
 
 if __name__ == "__main__":
@@ -46,7 +43,7 @@ if __name__ == "__main__":
     factory.setProtocol(PanelRequestProtocol)
 
 
-    checkMemory(opts.checkInterval)
+    checkMemory(opts.checkInterval, opts.logger)
 
 
     listenWS(factory)

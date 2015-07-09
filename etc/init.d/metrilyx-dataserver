@@ -71,6 +71,7 @@ start_dataserver() {
 # Start $SERVER_COUNT instances of the dataserver
 #
 start() {
+	check_logdir;
 	set_server_count;
 
 	for c in `seq ${SERVER_COUNT}`; do

@@ -4,7 +4,6 @@ import ujson as json
 from websock import PanelRequestParserWSProto
 from request_tracker import RequestTracker
 
-from pprint import pprint
 
 class PanelRequestProtocol(PanelRequestParserWSProto):
 
@@ -27,10 +26,6 @@ class PanelRequestProtocol(PanelRequestParserWSProto):
         # Start fetching. Pass in function to send data with.
         d = panelRequest.fetch(self.onPanelData)
         d.addCallback(self.__onRequestDone)
-        
-        # Print panel request
-        jStr = json.dumps(panelRequest)
-        pprint(json.loads(jStr))
 
 
     def onTearDown(self):
